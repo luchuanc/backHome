@@ -143,7 +143,7 @@
     }
     if (!source || typeof source !== 'object' || Array.isArray(source)) invalidSnapshot();
     const migrated = cloneSnapshotTree(source);
-    if (migrated.version !== 1 && migrated.version !== 2 && migrated.version !== 3) invalidSnapshot();
+    if (![1, 2, 3, 4].includes(migrated.version)) invalidSnapshot();
     if (migrated.version === 1) {
       // v1 已发布存档只补战斗新增字段，不改玩家背包、设施或旧科技等级。
       migrated.version = 2;
@@ -191,11 +191,19 @@
         migrated.result.medkitsLeft = migrated.player && migrated.player.medkits;
       }
     }
+    if (migrated.version === 3) {
+      migrated.version = 4;
+      migrated.defense = null;
+      // 已接通的旧站点不要求重打，正在撤离的旧档也保留原有通道。
+      if (!migrated.exit || typeof migrated.exit !== 'object') invalidSnapshot();
+      migrated.exit.called = migrated.exit.progress > 0;
+      migrated.exit.arrival = 0;
+    }
     return migrated;
   }
 
   function validateSnapshot(source) {
-    if (!source || typeof source !== 'object' || Array.isArray(source) || source.version !== 3) invalidSnapshot();
+    if (!source || typeof source !== 'object' || Array.isArray(source) || source.version !== 4) invalidSnapshot();
     finiteSnapshotTree(source, new WeakSet(), 0);
     snapshotNumber(source, 'seed', 0, 0xffffffff, true);
     snapshotNumber(source, 'rngState', 1, 0xffffffff, true);
@@ -278,6 +286,18 @@
     if (!source.exit || typeof source.exit !== 'object') invalidSnapshot();
     ['x', 'y', 'r', 'progress'].forEach((key) => snapshotNumber(source.exit, key, 0, 100000, false));
     if (typeof source.exit.available !== 'boolean') invalidSnapshot();
+    if (typeof source.exit.called !== 'boolean') invalidSnapshot();
+    snapshotNumber(source.exit, 'arrival', 0, 8, false);
+    if (!source.exit.called && source.exit.arrival !== 0) invalidSnapshot();
+    if (source.defense !== null) {
+      const defense = source.defense;
+      if (!defense || typeof defense !== 'object' || !relays.some((relay) => relay.id === defense.relayId && !relay.active)) invalidSnapshot();
+      snapshotNumber(defense, 'elapsed', 0, 18, false);
+      snapshotNumber(defense, 'wave', 0, 3, true);
+      snapshotNumber(defense, 'pattern', 0, 2, true);
+      if (defense.leaderId !== null && typeof defense.leaderId !== 'string') invalidSnapshot();
+      if ((defense.wave === 3) !== (defense.leaderId !== null)) invalidSnapshot();
+    }
     if (source.result !== null && typeof source.result !== 'object') invalidSnapshot();
     if (source.state === 'result' && !source.result) invalidSnapshot();
     if (source.state !== 'result' && source.result !== null) invalidSnapshot();
@@ -443,7 +463,9 @@
         y: this.world.h - 270,
         r: 88,
         progress: 0,
-        available: false
+        available: false,
+        called: false,
+        arrival: 0
       };
       const maxHp = 100 + this.facilities.infirmary * 15;
       this.player = {
@@ -474,6 +496,7 @@
       this.texts = [];
       this.kills = 0;
       this.relaysActivated = 0;
+      this.defense = null;
       this.bossSpawned = false;
       this.bossDefeated = false;
       // 时间补给只触发一次，随快照保存，避免恢复远征后重复刷资源。
@@ -787,6 +810,8 @@
         if (distance(x, y, this.player.x, this.player.y) < 120) continue;
         if (pointInObstacle(x, y, 24, this.obstacles)) continue;
         if (this.enemies.some((enemy) => distance(x, y, enemy.x, enemy.y) < 52)) continue;
+        // 优先从可见道路接近，避免新增敌群全堵在建筑背面。
+        if (attempt < 24 && !this._hasLineOfSight(this.player.x, this.player.y, x, y)) continue;
         return { x, y };
       }
       return { x: 90, y: 90 };
@@ -827,14 +852,14 @@
     _spawnOpeningGroup() {
       if (this._spawnedOpeningGroup) return;
       this._spawnedOpeningGroup = true;
-      for (let i = 0; i < 3; i += 1) {
+      for (let i = 0; i < 6; i += 1) {
         const point = this._safeSpawnPoint(260 + i * 15);
         this._spawnEnemy(i === 2 ? 'runner' : 'crawler', point.x, point.y, false);
       }
     }
 
     _spawnWave() {
-      const cap = 8 + this.threat * 4 + (this.bossSpawned ? 4 : 0);
+      const cap = 20 + this.threat * 4 + (this.bossSpawned ? 4 : 0);
       if (this.enemies.filter((enemy) => enemy.type !== 'boss').length >= cap) return;
       const roll = this._rng.next();
       let type = 'crawler';
@@ -846,7 +871,7 @@
       else if (this.threat < 4 || roll < 0.83) type = 'runner';
       else type = 'brute';
       const elite = type !== 'crawler' && this._rng.next() < 0.08 + this.threat * 0.015;
-      const point = this._safeSpawnPoint(300 + this.threat * 20);
+      const point = this._safeSpawnPoint(240);
       this._spawnEnemy(type, point.x, point.y, elite);
     }
 
@@ -854,7 +879,7 @@
       const key = String(threshold);
       if (this.waveFlags[key]) return;
       this.waveFlags[key] = true;
-      const cap = 8 + this.threat * 4 + (this.bossSpawned ? 4 : 0);
+      const cap = 20 + this.threat * 4 + (this.bossSpawned ? 4 : 0);
       const available = Math.max(0, cap - this.enemies.filter((enemy) => enemy.type !== 'boss').length);
       const count = Math.min(8, available);
       for (let i = 0; i < count; i += 1) {
@@ -1177,8 +1202,10 @@
       if (!this._spawnedOpeningGroup && this.elapsed >= 1.5) this._spawnOpeningGroup();
       this._spawnTimer -= dt;
       if (this._spawnTimer <= 0) {
-        this._spawnTimer = Math.max(1.8, 5.8 - this.threat * 0.62);
+        this._spawnTimer = this.elapsed < 30 ? 2.7 : Math.max(1.4, 2.6 - this.threat * 0.22);
+        // 成对抵达，让连击和范围科技在前期也有用；事件期间保留喘息空间。
         this._spawnWave();
+        if (!this.defense && !(this.exit.called && this.exit.arrival > 0)) this._spawnWave();
       }
       this._updateTimedWaves();
       // 主动召唤之外仍保留第六分钟的自动唤醒，玩家可继续探索等待。
@@ -1678,7 +1705,8 @@
     _findInteraction() {
       const player = this.player;
       if (this.exit.available && distance(player.x, player.y, this.exit.x, this.exit.y) <= this.exit.r + player.r + 10) {
-        return { id: 'exit', kind: 'exit', name: '撤离', x: this.exit.x, y: this.exit.y, duration: Math.max(0.8, 2 - this.facilities.beacon * 0.35) };
+        if (this.exit.called && this.exit.arrival > 0) return null;
+        return { id: 'exit', kind: 'exit', name: this.exit.called ? '登车撤离' : '呼叫接应 · 迎击追兵', x: this.exit.x, y: this.exit.y, duration: this.exit.called ? Math.max(0.8, 2 - this.facilities.beacon * 0.35) : 1 };
       }
       let best = null;
       let bestDistance = Infinity;
@@ -1691,12 +1719,13 @@
         }
       });
       this.relays.forEach((relay) => {
+        if (this.defense && !relay.active) return;
         const summon = relay.active && this.relaysActivated >= 3 && !this.bossSpawned;
         if (relay.active && !summon) return;
         const d = distance(player.x, player.y, relay.x, relay.y);
         if (d <= relay.r + player.r + 24 && d < bestDistance) {
           best = {
-            id: relay.id, kind: summon ? 'summon' : 'relay', name: summon ? '唤醒守卫' : '激活中继站',
+            id: relay.id, kind: summon ? 'summon' : 'relay', name: summon ? '唤醒守卫' : '守点挑战 · 核心 + 强化',
             x: relay.x, y: relay.y, duration: summon ? 2 : 1.3
           };
           bestDistance = d;
@@ -1734,7 +1763,7 @@
       if (this.relaysActivated >= 3) this._summonNeedsRelease = true;
       this._emit('relay', `中继站 ${this.relaysActivated}/3 已激活`, { relayId: relay.id, count: this.relaysActivated });
       this._addEffect('ring', relay.x, relay.y, '#7bddcf', 0.7, 42);
-      this._gainXp(90);
+      this._gainXp(Math.max(90, this.player.xpNext - this.player.xp));
       const relayHeal = Math.min(15, Math.max(0, this.player.maxHp - this.player.hp));
       if (relayHeal > 0) {
         this.player.hp += relayHeal;
@@ -1746,7 +1775,65 @@
       }
     }
 
+    _startDefense(relay) {
+      if (!relay || relay.active || this.defense) return;
+      this.defense = { relayId: relay.id, elapsed: 0, wave: 0, leaderId: null, pattern: (this.seed + this.relays.indexOf(relay)) % 3 };
+      this._emit('toast', '守点开始：圈内累计防守 18 秒并击破精英，获得核心与一次强化。离圈可躲避，进度保留。');
+    }
+
+    _updateDefense(dt) {
+      if (!this.defense || this.state !== 'running') return;
+      const defense = this.defense;
+      const relay = this.relays.find((item) => item.id === defense.relayId);
+      if (distance(this.player.x, this.player.y, relay.x, relay.y) > 190) return;
+      defense.elapsed = Math.min(18, defense.elapsed + dt);
+      if (defense.wave < 3 && defense.elapsed >= defense.wave * 6) {
+        const patterns = [
+          ['crawler', 'crawler', 'crawler', 'runner'],
+          ['runner', 'crawler', 'runner', 'crawler'],
+          ['crawler', 'spitter', 'crawler', 'crawler']
+        ];
+        const group = patterns[defense.pattern];
+        // 事件至多追加十二个普通敌人和一个精英，不依赖常规怪上限放行。
+        group.forEach((type) => {
+          const point = this._safeSpawnPoint(240);
+          this._spawnEnemy(type, point.x, point.y, false);
+        });
+        defense.wave += 1;
+        if (defense.wave === 3) {
+          const point = this._safeSpawnPoint(240);
+          const leader = this._spawnEnemy(defense.pattern === 1 ? 'runner' : 'spitter', point.x, point.y, true);
+          leader.hp = leader.maxHp = leader.maxHp * 2;
+          defense.leaderId = leader.id;
+          this._emit('toast', '精英携带能源核心！击破金色标记目标，完成守点。');
+        }
+        this._addEffect('ring', relay.x, relay.y, '#f6c76b', 0.6, 190);
+      }
+      if (defense.elapsed >= 18 && defense.wave === 3 && !this.enemies.some((enemy) => enemy.id === defense.leaderId && enemy.hp > 0)) {
+        this.defense = null;
+        this._activateRelay(relay);
+      }
+    }
+
+    _callExtraction() {
+      if (this.exit.called) return;
+      this.exit.called = true;
+      this.exit.arrival = Math.max(3.5, 8 - this.facilities.beacon * 1.5);
+      for (let i = 0; i < 8; i += 1) {
+        const point = this._safeSpawnPoint(240);
+        this._spawnEnemy(i % 3 === 0 ? 'runner' : 'crawler', point.x, point.y, false);
+      }
+      this._emit('toast', '接应已呼叫，追兵正在包围！移动迎击，倒计时结束后回绿圈登车。');
+    }
+
+    _updateExtraction(dt) {
+      if (!this.exit.called || this.exit.arrival <= 0) return;
+      this.exit.arrival = Math.max(0, this.exit.arrival - dt);
+      if (this.exit.arrival === 0) this._emit('toast', '接应抵达！回南侧绿圈，按住交互登车撤离。');
+    }
+
     _updateInteraction(dt, input) {
+      if (this.state !== 'running') return;
       const held = Boolean(input.interact);
       // 激活最后一站的持续按住不能顺带召唤，恢复存档也保留这道松手保护。
       if (!held) this._summonNeedsRelease = false;
@@ -1794,12 +1881,15 @@
       if (target.kind === 'exit') this.exit.progress = this._interactionProgress;
       if (this._interactionProgress < 1) return;
       if (target.kind === 'exit') {
-        this._emit('extract', '撤离通道已确认，正在返回营地。');
-        this.finish(true, 'extracted');
+        if (!this.exit.called) this._callExtraction();
+        else {
+          this._emit('extract', '撤离通道已确认，正在返回营地。');
+          this.finish(true, 'extracted');
+        }
       } else if (target.kind === 'container') {
         this._openContainer(this.containers.find((container) => container.id === target.id));
       } else if (target.kind === 'relay') {
-        this._activateRelay(this.relays.find((relay) => relay.id === target.id));
+        this._startDefense(this.relays.find((relay) => relay.id === target.id));
       } else if (target.kind === 'summon' && this.state === 'running') {
         this._spawnBoss();
       }
@@ -1855,6 +1945,10 @@
       this._updateBullets(delta);
       this._cleanupDeadEnemies();
       this._collectDrops();
+      if (this.state === 'running') {
+        this._updateExtraction(delta);
+        this._updateDefense(delta);
+      }
       this._updateInteraction(delta, controls);
       this._updateEffects(delta);
       if (this.elapsed >= this.duration && this.state === 'running') this.finish(false, 'storm');
@@ -1906,7 +2000,7 @@
 
     serialize() {
       const snapshot = {
-        version: 3,
+        version: 4,
         seed: this.seed,
         rngState: this._rng.state >>> 0,
         idCounter: this._idCounter,
@@ -1932,6 +2026,7 @@
         exit: copy(this.exit),
         kills: this.kills,
         relaysActivated: this.relaysActivated,
+        defense: copy(this.defense),
         bossSpawned: this.bossSpawned,
         bossDefeated: this.bossDefeated,
         supplyFlags: copy(this.supplyFlags),
@@ -2007,6 +2102,7 @@
       game.exit = Object.assign(game.exit, copy(source.exit || {}));
       game.kills = Math.max(0, Math.floor(finite(source.kills, 0)));
       game.relaysActivated = clamp(Math.floor(finite(source.relaysActivated, 0)), 0, 3);
+      game.defense = copy(source.defense);
       game.bossSpawned = Boolean(source.bossSpawned);
       game.bossDefeated = Boolean(source.bossDefeated);
       game.supplyFlags = {

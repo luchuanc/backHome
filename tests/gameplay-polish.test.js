@@ -210,7 +210,8 @@ test('最后一站持续按住不能顺带召唤，释放后长按两秒只唤�
   const relay = game.relays[2];
   game.player.x = relay.x;
   game.player.y = relay.y;
-  tick(game, 1.4, { interact: true }, true);
+  game._activateRelay(relay);
+  while (game.state === 'upgrade') game.chooseUpgrade(game.upgradeChoices[0]);
   assert.equal(game.relaysActivated, 3);
   tick(game, 3, { interact: true }, true);
   assert.equal(game.bossSpawned, false);
@@ -486,7 +487,7 @@ test('追踪快照保留候选、保底、随机状态，恢复后的重抽和�
   assert.deepEqual(restored.serialize(), game.serialize());
 });
 
-test('v1 和 v2 显式迁移到 v3，保留旧随机数、背包、交互进度和候选', () => {
+test('v1 和 v2 显式迁移到 v4，保留旧随机数、背包、交互进度和候选', () => {
   for (const version of [1, 2]) {
     const game = quiet();
     game.player.bag = { scrap: 12, circuit: 3, core: 2 };
@@ -516,7 +517,7 @@ test('v1 和 v2 显式迁移到 v3，保留旧随机数、背包、交互进度�
       ['metalstorm', 'thunder', 'shatter', 'gravity'].forEach((id) => delete legacy.upgrades[id]);
     }
     const restored = Game.fromSnapshot(legacy);
-    assert.equal(restored.serialize().version, 3);
+    assert.equal(restored.serialize().version, 4);
     assert.equal(restored._rng.state, legacy.rngState);
     assert.deepEqual(restored.player.bag, legacy.player.bag);
     assert.deepEqual(restored.upgradeChoices, legacy.upgradeChoices);

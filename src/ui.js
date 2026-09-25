@@ -56,7 +56,7 @@
   }
   function title() {
     setView('title'); audio.setMode('camp');
-    $('screen').innerHTML = `<div class="game-version">${icon('home', 18)} LAST SALVAGE · 1.2 / 回收行动</div><main class="game-title"><div class="game-title-stamp">生 存 · 拾 荒 · 重 建</div><h1>最后一家<span>回收站</span></h1><div class="game-title-rule"><i></i><span>THE LAST SALVAGE</span><i></i></div></main><nav class="main-menu" aria-label="游戏主菜单"><button class="menu-main" data-action="camp"><span class="menu-cursor">▶</span>${profile.stats.runs || profile.tutorialSeen ? '继续游戏' : '开始游戏'}<span class="menu-key">ENTER</span></button><button data-action="help">生存手册</button><button data-action="settings">游戏设置</button><small>单机冒险 · 本地自动保存</small></nav><div class="title-bottom-line">风暴之外，还有一盏为你留着的灯。</div>`;
+    $('screen').innerHTML = `<div class="game-version">${icon('home', 18)} LAST SALVAGE · 1.3 / 突围行动</div><main class="game-title"><div class="game-title-stamp">生 存 · 拾 荒 · 重 建</div><h1>最后一家<span>回收站</span></h1><div class="game-title-rule"><i></i><span>THE LAST SALVAGE</span><i></i></div></main><nav class="main-menu" aria-label="游戏主菜单"><button class="menu-main" data-action="camp"><span class="menu-cursor">▶</span>${profile.stats.runs || profile.tutorialSeen ? '继续游戏' : '开始游戏'}<span class="menu-key">ENTER</span></button><button data-action="help">生存手册</button><button data-action="settings">游戏设置</button><small>单机冒险 · 本地自动保存</small></nav><div class="title-bottom-line">风暴之外，还有一盏为你留着的灯。</div>`;
   }
   function costHTML(cost) { return `<div class="cost">${Object.keys(cost).filter(k => cost[k] > 0).map(k => `<span class="${profile.resources[k] < cost[k] ? 'insufficient' : ''}" title="${D.resourceNames[k]}">${icon(k, 12)}${cost[k]}</span>`).join('')}</div>`; }
   function facilityHTML() {
@@ -110,10 +110,10 @@
   function help(inRun = false) {
     if (inRun) {
       // 第一趟只教完成小闭环所需的动作，完整规则留在暂停菜单的生存手册。
-      showModal('tutorial', `<div class="eyebrow">FIRST EXPEDITION</div><h2 id="modal-title">带回第一箱物资。</h2><p class="intro">先试一小趟，随时可以回来建设营地。</p><div class="quick-tutorial-steps"><div><span>01</span><strong>移动，自动开火</strong><p>${isTouch ? '拖动左下摇杆。右下大按钮冲刺避险。' : 'WASD 移动。空格冲刺避险。'}武器会自动攻击。</p></div><div><span>02</span><strong>打开身边的箱子</strong><p>靠近补给箱，${isTouch ? '按住右侧搜集按钮' : '按住 E'}。松手取消，材料会自动拾取。</p></div><div><span>03</span><strong>活着把物资带回家</strong><p>45 秒后南侧撤离点开放。进入绿圈，${isTouch ? '按住撤离按钮' : '按住 E'}，回营升级设施。</p></div></div><p class="quick-tutorial-note">先打开第一只箱子。更多规则可在暂停菜单的「操作手册」查看。</p><div class="modal-actions"><button class="button-primary" data-action="tutorial-done">记住了，出发 ${icon('arrow', 18)}</button></div>`, 'quick-tutorial');
+      showModal('tutorial', `<div class="eyebrow">FIRST EXPEDITION</div><h2 id="modal-title">打出一套火力，再带核心回家。</h2><p class="intro">击破敌群获得强化，挑战中继夺取核心，决定何时突围。</p><div class="quick-tutorial-steps"><div><span>01</span><strong>移动，自动开火</strong><p>${isTouch ? '拖动左下摇杆。右下大按钮冲刺避险。' : 'WASD 移动。空格冲刺避险。'}武器会自动攻击。</p></div><div><span>02</span><strong>守点，夺取能源核心</strong><p>找到地图金色中继，${isTouch ? '按住右侧守点按钮' : '按住 E'} 启动。圈内累计防守 18 秒并击破精英，获得核心与强化。</p></div><div><span>03</span><strong>呼叫接应，迎击追兵</strong><p>45 秒后南侧撤离点开放。进入绿圈${isTouch ? '按住呼叫按钮' : '按住 E'} 呼叫接应，边打边等，抵达后再登车。</p></div></div><p class="quick-tutorial-note">先击破身边敌人、拾取蓝色经验。箱子是沿途补给，地图金点是挑战目标。</p><div class="modal-actions"><button class="button-primary" data-action="tutorial-done">记住了，出发 ${icon('arrow', 18)}</button></div>`, 'quick-tutorial');
       return;
     }
-    showModal('help', `<div class="eyebrow">FIELD MANUAL / 01</div><h2 id="modal-title">先活着，再满载而归。</h2><p class="intro">别急着捡完所有东西。回收站会一直等你。</p><div class="tutorial-list"><div class="tutorial-step"><span class="step-number">01</span><div><strong>移动靠你，射击交给武器。</strong><p>${isTouch ? '在左下区域按下并拖动摇杆，武器自动攻击附近敌人。右下大按钮冲刺，提供短暂无敌；按钮显示剩余冷却。' : 'WASD 或方向键移动，武器自动攻击附近敌人。按住鼠标左键可手动瞄准，鼠标右键点击地面可自动寻路。空格冲刺，在危险中短暂无敌。'}</p></div></div><div class="tutorial-step"><span class="step-number">02</span><div><strong>${isTouch ? '找到箱子，按住右侧按钮搜集。' : '找到箱子，按住 E 拆解。'}</strong><p>${isTouch ? '靠近箱子会出现搜集按钮，持续按住完成搜集，松手取消。' : '靠近箱子后按住 E，或点击交互提示自动拆解；移动可取消。'}材料自动拾取；能源核心占 3 格，其余材料占 1 格。核心优先拾取；空间不足时，靠近核心点击「换取核心」，确认用废铁腾位并立即拾取。</p></div></div><div class="tutorial-step"><span class="step-number">03</span><div><strong>记住回家的方向，也能选择挑战。</strong><p>45 秒后，南侧绿色撤离点开放。${isTouch ? '在圈内按住右侧撤离按钮即可回家。' : '在圈内按住 E 即可回家。'}激活中继站可获得经验和治疗；三座接通后，可在任意中继长按 2 秒提前唤醒守卫，也可继续搜集，等第 6 分钟自动唤醒。第 3、5 分钟会出现补给。</p></div></div></div>${isTouch ? '<div class="controls-grid"><span>急救：按钮显示剩余数量</span><span>地图：点击右上小地图</span><span>背包：点击右上容量</span><span>交互：按住执行，松手取消</span></div>' : `<div class="controls-grid"><span><span class="key">Q</span>急救，恢复 40% 生命</span><span><span class="key">M</span>查看完整地图</span><span><span class="key">Esc</span>暂停、设置与背包</span><span><span class="key">E</span>按住搜集 / 激活 / 撤离</span></div>`}<div class="callout">风暴会在 10 分钟后吞没废料场。失败时保留 35% 废铁和电路，能源核心全部丢失。击破为超载充能；满能量后进入就绪状态，下一次有效射击爆发 8 秒。科技需先完成配方，再在之后的升级选择中安装进化；可在蓝图追踪一条配方，连续两次升级未出现缺件，下次保底，重抽保留保底配件。${isTouch ? '点击底部科技入口查看蓝图。' : '按 T 查看蓝图。'}局内科技回营地后清空。</div><p class="rotate-note">进入游戏会自动横屏。触屏使用左侧摇杆移动，右侧按钮冲刺、急救与交互。</p><div class="modal-actions"><button class="button-primary" data-action="close">我知道了 ${icon('arrow', 18)}</button></div>`);
+    showModal('help', `<div class="eyebrow">FIELD MANUAL / 01</div><h2 id="modal-title">先活着，再满载而归。</h2><p class="intro">别急着捡完所有东西。回收站会一直等你。</p><div class="tutorial-list"><div class="tutorial-step"><span class="step-number">01</span><div><strong>移动靠你，射击交给武器。</strong><p>${isTouch ? '在左下区域按下并拖动摇杆，武器自动攻击附近敌人。右下大按钮冲刺，提供短暂无敌；按钮显示剩余冷却。' : 'WASD 或方向键移动，武器自动攻击附近敌人。按住鼠标左键可手动瞄准，鼠标右键点击地面可自动寻路。空格冲刺，在危险中短暂无敌。'}</p></div></div><div class="tutorial-step"><span class="step-number">02</span><div><strong>${isTouch ? '找到箱子，按住右侧按钮搜集。' : '找到箱子，按住 E 拆解。'}</strong><p>${isTouch ? '靠近箱子会出现搜集按钮，持续按住完成搜集，松手取消。' : '靠近箱子后按住 E，或点击交互提示自动拆解；移动可取消。'}材料自动拾取；能源核心占 3 格，其余材料占 1 格。核心优先拾取；空间不足时，靠近核心点击「换取核心」，确认用废铁腾位并立即拾取。</p></div></div><div class="tutorial-step"><span class="step-number">03</span><div><strong>记住回家的方向，也能选择挑战。</strong><p>45 秒后，南侧绿色撤离点开放。按住交互 1 秒呼叫接应，迎击追兵 8 秒后再按住登车；信标会缩短等待。金色中继可启动守点：圈内累计防守 18 秒，迎击三波敌群并击破携带核心的精英；离圈进度保留。完成获得至少一次强化和治疗；三座接通后，可在任意中继长按 2 秒提前唤醒守卫，也可继续搜集，等第 6 分钟自动唤醒。第 3、5 分钟会出现补给。</p></div></div></div>${isTouch ? '<div class="controls-grid"><span>急救：按钮显示剩余数量</span><span>地图：点击右上小地图</span><span>背包：点击右上容量</span><span>交互：按住执行，松手取消</span></div>' : `<div class="controls-grid"><span><span class="key">Q</span>急救，恢复 40% 生命</span><span><span class="key">M</span>查看完整地图</span><span><span class="key">Esc</span>暂停、设置与背包</span><span><span class="key">E</span>按住搜集 / 激活 / 撤离</span></div>`}<div class="callout">风暴会在 10 分钟后吞没废料场。失败时保留 35% 废铁和电路，能源核心全部丢失。击破为超载充能；满能量后进入就绪状态，下一次有效射击爆发 8 秒。科技需先完成配方，再在之后的升级选择中安装进化；可在蓝图追踪一条配方，连续两次升级未出现缺件，下次保底，重抽保留保底配件。${isTouch ? '点击底部科技入口查看蓝图。' : '按 T 查看蓝图。'}局内科技回营地后清空。</div><p class="rotate-note">进入游戏会自动横屏。触屏使用左侧摇杆移动，右侧按钮冲刺、急救与交互。</p><div class="modal-actions"><button class="button-primary" data-action="close">我知道了 ${icon('arrow', 18)}</button></div>`);
   }
   function buildHUD() {
     $('hud').innerHTML = `<div class="hud-top"><div class="health-panel"><div class="health-title"><strong class="desktop-only">回收员 · 07</strong><span id="mobile-level" class="mobile-only"></span><span id="hp-value"></span></div><div class="meter"><div class="meter-fill" id="hp-fill"></div></div><div class="meter xp-meter"><div class="meter-fill" id="xp-fill"></div></div><div class="health-sub"><span id="weapon-label"></span><span id="level-label"></span></div></div><div class="time-panel"><div class="eyebrow">风暴抵达倒计时</div><div class="time" id="run-time"></div><div class="threat-bars" id="threat-bars">${[1, 2, 3, 4, 5].map(n => `<i data-level="${n}"></i>`).join('')}</div></div><div class="hud-right"><div class="bag-panel"><div class="resource-strip" id="run-resources"></div><div class="bag-weight"><span>回收背包</span><span id="bag-value"></span></div><div class="meter"><div class="meter-fill" id="bag-fill"></div></div></div><div class="hud-buttons"><button class="icon-button" data-action="pause" aria-label="暂停游戏">${icon('pause', 17)}</button><button class="icon-button" data-action="map" aria-label="打开地图">${icon('map', 17)}</button></div></div></div><div class="run-banner" id="run-banner"></div><div class="overdrive-panel" id="overdrive-panel"><div><span id="overdrive-label">超载核心</span><strong id="overdrive-value">0%</strong></div><div class="overdrive-meter"><i id="overdrive-fill"></i></div><small id="overdrive-note">击破充能 · 就绪后有效射击爆发</small></div><div class="combo-panel" id="combo-panel" hidden><strong id="combo-count"></strong><span id="combo-caption">连续击破</span><i id="combo-life"></i></div><button class="run-tech-strip" data-action="tech" aria-label="查看科技蓝图"><span class="tech-strip-title">科技 <kbd class="desktop-only">T</kbd></span><span id="mobile-tech-count" class="mobile-only"></span><span id="run-tech-icons"></span></button><div class="boss-bar" id="boss-bar" hidden><strong>废墟守卫 / THE WARDEN</strong><div class="meter"><div class="meter-fill" id="boss-fill"></div></div></div><div class="objectives"><div class="eyebrow">当前远征 / OBJECTIVE</div><p id="objective-main"></p><small id="objective-sub"></small></div><div class="hud-controls"><span><span class="key">W A S D</span>移动</span><span><span class="key">E</span>按住交互</span><span><span class="key">右键</span>寻路</span><span><span class="key">M</span>地图</span><span><span class="key">Esc</span>暂停</span></div><div class="action-bar"><button class="action-slot" data-action="dash" aria-label="冲刺">${icon('dash', 21)}<span><strong>冲刺 <span class="muted">SPACE</span></strong><small id="dash-label"></small></span><i class="cooldown" id="dash-fill"></i></button><button class="action-slot" data-action="heal" aria-label="使用急救包">${icon('infirmary', 21)}<span><strong>急救 <span class="muted">Q</span></strong><small id="heal-label"></small></span></button></div><div class="minimap-wrap"><button data-action="map" aria-label="查看完整地图"><div class="minimap-title"><span>NORTH YARD</span><span>M ↗</span></div><canvas id="minimap" width="350" height="262"></canvas></button></div><button class="interaction-hint" id="interaction-hint" data-action="interact-assist" hidden><span id="interaction-text"></span><div class="meter"><div class="meter-fill" id="interaction-fill"></div></div></button><button id="core-exchange" class="core-exchange-hud" data-action="core-exchange" hidden>${icon('core',22)}<span>换取核心</span></button><button id="mobile-bag" class="mobile-only" data-action="pause" aria-label="打开背包整理">${icon('storage',22)}<span id="mobile-bag-value"></span></button>`;
@@ -137,18 +137,19 @@
     if (game && game.state !== 'result' && typeof game.serialize === 'function') { profile.suspendedRun = game.serialize(); save(); }
   }
   function objectiveCopy() {
-    const exitHint = game.exit.available ? `南侧绿色撤离点已开放，${isTouch ? '可打开右上地图寻路' : '进入绿圈按住 E 回营'}。` : `撤离点将在 ${Math.max(0, Math.ceil(45 - game.elapsed))} 秒后开放。`;
+    const exitHint = game.exit.available ? '南侧绿圈可呼叫接应，迎击追兵后登车。' : `撤离点将在 ${Math.max(0, Math.ceil(45 - game.elapsed))} 秒后开放。`;
+    if (game.exit.called) return { main: game.exit.arrival > 0 ? `迎击追兵 · 接应 ${Math.ceil(game.exit.arrival)} 秒` : '接应抵达 · 返回南侧登车', sub: game.exit.arrival > 0 ? '不用按住交互，自由走位、射击和冲刺。' : '进入绿圈按住交互，带着战利品回家。' };
+    if (game.defense) {
+      const defense = game.defense, relay = game.relays.find(r => r.id === defense.relayId);
+      const inside = Math.hypot(game.player.x - relay.x, game.player.y - relay.y) <= 190;
+      const leaderAlive = game.enemies.some(e => e.id === defense.leaderId && e.hp > 0);
+      return { main: defense.elapsed >= 18 ? (leaderAlive ? '击破金色精英 · 完成守点' : '回到金圈 · 接通中继') : `${inside ? '守点' : '回到金圈'} · 剩余 ${Math.ceil(18 - defense.elapsed)} 秒`, sub: `第 ${defense.wave}/3 波 · 精英掉落核心，接通奖励强化。${inside ? '圈内自由走位，无需按住交互。' : '离圈进度保留，地图金圈标出站点。'}` };
+    }
     if (game.bossDefeated) return { main: isTouch ? '携带核心撤离' : '守卫已击破，带核心安全撤离。', sub: exitHint };
     if (game.bossSpawned) return { main: isTouch ? '击败北侧守卫' : '废墟守卫已苏醒 · 前往北侧', sub: exitHint };
     if (game.relaysActivated >= 3) return { main: isTouch ? '中继长按唤醒 / 继续搜集' : '中继长按 2 秒唤醒守卫，也可继续搜集', sub: bossReadyCopy() };
-    // 首局目标由开箱、等级和撤离状态推进，不用倒计时假装玩家已学会操作。
-    if (profile.stats.runs === 0) {
-      if (game.stats.opened === 0) return { main: '打开第一只补给箱', sub: isTouch ? '靠近箱子，按住右侧搜集按钮。' : '靠近箱子，按住 E 搜集。' };
-      if (game.player.level < 2) return { main: '拾取经验 · 取得首次强化', sub: '击败敌人可获得经验，选择科技后继续探索。' };
-      const goal = S.Store.nextGoal(profile, game.player.bag);
-      return { main: game.exit.available ? '南侧撤离 · 回营建设' : '搜集材料 · 等待撤离', sub: `${exitHint}${goalCopy(goal, true)}。也可继续接通中继。` };
-    }
-    return { main: isTouch ? `中继站 ${game.relaysActivated}/3` : `搜集物资 · 激活中继站 ${game.relaysActivated} / 3`, sub: exitHint };
+    if (game.player.level < 2) return { main: '击破敌群 · 拾取经验强化', sub: '武器自动开火，靠近蓝色经验；空格 / 冲刺按钮躲避。' };
+    return { main: isTouch ? `守点夺核心 ${game.relaysActivated}/3` : `挑战中继 · 核心 + 强化 · ${game.relaysActivated} / 3`, sub: `地图金点是守点挑战；三站完成可主动召唤守卫。${exitHint}` };
   }
   function updateHUD() {
     if (!game || view !== 'run') return;
@@ -176,11 +177,11 @@
     if (isTouch) {
       const key = weight >= p.capacity ? 'full' : game.duration - game.elapsed < 90 ? 'storm' : game.elapsed < 7 ? 'intro' : '';
       if (key !== mobileBannerKey) { mobileBannerKey = key; mobileBannerUntil = game.elapsed + (key === 'intro' ? 7 - game.elapsed : 4); }
-      $('run-banner').textContent = { full: '背包已满 · 点容量整理', storm: '风暴逼近 · 立即撤离', intro: '左侧移动 · 右侧冲刺' }[key] || '';
+      $('run-banner').textContent = { full: '满包仍可升级 · 可换核心', storm: '风暴逼近 · 立即撤离', intro: '左侧移动 · 右侧冲刺' }[key] || '';
       $('run-banner').hidden = !key || game.elapsed >= mobileBannerUntil;
     } else {
       $('run-banner').hidden = false;
-    $('run-banner').textContent = weight >= p.capacity ? '背包已满 · 暂停菜单可丢弃废铁' : game.elapsed < 25 ? `${effectiveAutoFire() ? '自动射击已开启' : '按住左键射击'} · 靠近箱子按住 E` : game.duration - game.elapsed < 90 ? '风暴逼近，立刻返回撤离点！' : `威胁等级 ${game.threat} / 5 · ${effectiveAutoFire() ? '自动射击' : '手动射击'}`;
+    $('run-banner').textContent = weight >= p.capacity ? '背包满也能升级 · 守点夺核心' : game.elapsed < 25 ? `${effectiveAutoFire() ? '自动射击已开启' : '按住左键射击'} · 击破敌群，拾取蓝色经验` : game.duration - game.elapsed < 90 ? '风暴逼近，立刻返回撤离点！' : `威胁等级 ${game.threat} / 5 · ${effectiveAutoFire() ? '自动射击' : '手动射击'}`;
     }
     const boss = game.enemies.find(e => e.type === 'boss' && e.hp > 0);
     $('hud').classList.toggle('boss-active', !!boss);
@@ -223,8 +224,8 @@
     $('touch-interact').hidden = !inter;
     if (!inter) { touchInteract = false; return; }
     // 这些名称由 Game._findInteraction 明确产出，不猜测不存在的 kind 字段。
-    const labels = { '撤离': '撤离', '打开医疗箱': '开箱', '搜集补给': '搜集', '激活中继站': '接通', '唤醒守卫': '唤醒' };
-    $('touch-interact-label').textContent = labels[inter.name];
+    const labels = { '呼叫接应 · 迎击追兵': '呼叫', '登车撤离': '登车', '打开医疗箱': '开箱', '搜集补给': '搜集', '守点挑战 · 核心 + 强化': '守点', '唤醒守卫': '唤醒' };
+    $('touch-interact-label').textContent = labels[inter.name] || '交互';
     $('touch-interact').setAttribute('aria-label', `按住${inter.name}${inter.name === '唤醒守卫' ? ' 2 秒' : ''}`);
     $('touch-interact-state').textContent = inter.progress > 0 ? `${Math.floor(inter.progress * 100)}%` : inter.name === '唤醒守卫' ? '按住2秒' : '按住';
     $('touch-interact').style.setProperty('--charge', `${Math.max(0, Math.min(1, inter.progress)) * 360}deg`);
@@ -339,7 +340,7 @@
   function mapModal() {
     if (!game || game.state === 'result' || game.state === 'upgrade') return;
     paused = true; clearInput(); audio.setMode('silent');
-    showModal('map', `<div class="eyebrow">NORTH YARD / EXPEDITION 01</div><h2 id="modal-title">北境废料场</h2><button class="icon-button modal-close" data-action="resume" aria-label="关闭地图">${icon('close', 17)}</button><p class="intro">三座中继接通后，长按中继 2 秒可提前唤醒守卫，或等第 6 分钟自动唤醒。南侧绿色区域可以撤离。</p><canvas id="large-map" width="1440" height="1080" aria-label="废料场地图"></canvas><div class="map-legend"><span><i style="background:#f6c76b"></i>回收员</span><span><i style="background:#8cd3b0"></i>撤离点</span><span><i style="background:#76c5cf"></i>中继站</span><span><i style="background:#ef8c78"></i>敌人 / 守卫</span><span><i style="background:#ded8b6"></i>补给 / 医疗箱</span><span>${isTouch ? '点击右上角关闭地图' : '按 M 或 Esc 返回'}</span></div>`, 'map-modal');
+    showModal('map', `<div class="eyebrow">NORTH YARD / EXPEDITION 01</div><h2 id="modal-title">北境废料场</h2><button class="icon-button modal-close" data-action="resume" aria-label="关闭地图">${icon('close', 17)}</button><p class="intro">金色站点：守点 18 秒、击破精英，拿核心与强化。三站完成可长按中继 2 秒唤醒守卫。南侧绿圈呼叫接应后突围。</p><canvas id="large-map" width="1440" height="1080" aria-label="废料场地图"></canvas><div class="map-legend"><span><i style="background:#f6c76b"></i>回收员</span><span><i style="background:#8cd3b0"></i>撤离点</span><span><i style="background:#f5c966"></i>守点 / 核心精英</span><span><i style="background:#ef8c78"></i>敌人 / 守卫</span><span><i style="background:#ded8b6"></i>补给 / 医疗箱</span><span>${isTouch ? '点击右上角关闭地图' : '按 M 或 Esc 返回'}</span></div>`, 'map-modal');
     renderer.drawMap(game, $('large-map'), true);
   }
   function settings() {
@@ -590,7 +591,7 @@
         if (event.type === 'overdrive-ready') toast('超载就绪 · 下一次有效射击爆发 8 秒', 3000);
         if (event.type === 'overdrive') toast('超载爆发！射速与回收范围全面提升', 2400);
         if (event.type === 'relay') toast(game.relaysActivated >= 3 ? '三站接通 · 可在中继长按 2 秒唤醒守卫，也可继续搜集。' : `中继站已接通 · ${game.relaysActivated} / 3`, game.relaysActivated >= 3 ? 5000 : 3000);
-        if (event.type === 'exit-open') toast('南侧撤离点已开放 · 可带物资回营建设，地图标记为绿色。', 5000);
+        if (event.type === 'exit-open') toast('南侧绿圈可呼叫接应 · 想要核心与强化，继续挑战金色中继。', 5000);
         if (event.type === 'boss') toast('北侧检测到巨大能量反应。废墟守卫已苏醒！', 4500);
       }
       renderer.draw(game, paused || modalType ? 0 : dt);

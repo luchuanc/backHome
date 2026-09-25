@@ -465,7 +465,7 @@
     ctx.translate(-this.camera.x, -this.camera.y);
     this._drawGround(ctx, game, view);
     this._drawExit(ctx, game.exit, game);
-    this._drawRelays(ctx, game.relays, view);
+    this._drawRelays(ctx, game.relays, view, game);
     this._drawObstacles(ctx, game.obstacles, view);
     this._drawContainers(ctx, game.containers, view);
     this._drawDrops(ctx, game.drops, view);
@@ -720,11 +720,11 @@
     ctx.font = '700 12px ' + FONT;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(exit.available ? '撤离区' : '撤离点', x, y - 6);
+    ctx.fillText(exit.called ? (exit.arrival > 0 ? '接应途中 · 迎击追兵' : '接应已抵达') : exit.available ? '撤离区' : '撤离点', x, y - 6);
     ctx.font = '600 10px ' + FONT;
     ctx.fillStyle = colorAlpha('#dbf6dd', 0.75);
     var remaining = Math.ceil(Math.max(0, 45 - entityNumber(game, 'elapsed', 0)));
-    ctx.fillText(exit.available ? '按住 E 撤离' : '45 秒后开放 · 剩余 ' + remaining + ' 秒', x, y + 13);
+    ctx.fillText(exit.called ? (exit.arrival > 0 ? Math.ceil(exit.arrival) + ' 秒 · 可移动躲避' : '按住交互登车') : exit.available ? '按住交互呼叫接应' : '45 秒后开放 · 剩余 ' + remaining + ' 秒', x, y + 13);
     if (finite(exit.progress, 0) > 0) {
       ctx.strokeStyle = '#f5cf62';
       ctx.lineWidth = 5;
@@ -735,17 +735,26 @@
     ctx.restore();
   };
 
-  Renderer.prototype._drawRelays = function (ctx, relays, view) {
+  Renderer.prototype._drawRelays = function (ctx, relays, view, game) {
     if (!Array.isArray(relays)) return;
     for (var i = 0; i < relays.length; i += 1) {
       var relay = relays[i];
-      if (!pointVisible(relay, view, 70)) continue;
+      if (!pointVisible(relay, view, 220)) continue;
       var x = entityNumber(relay, 'x', 0);
       var y = entityNumber(relay, 'y', 0);
       var r = Math.max(15, entityNumber(relay, 'r', 25));
       var active = Boolean(relay.active);
       var flicker = this.reducedMotion ? 0 : Math.sin(this._time * 5 + i) * 2;
       ctx.save();
+      var defense = game.defense && game.defense.relayId === relay.id ? game.defense : null;
+      if (defense) {
+        circle(ctx, x, y, 190, colorAlpha('#e5a841', 0.08), '#e5b456', 2);
+        ctx.strokeStyle = '#f7d47d';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.arc(x, y, 190, -Math.PI / 2, -Math.PI / 2 + TAU * defense.elapsed / 18);
+        ctx.stroke();
+      }
       ctx.shadowColor = active ? '#5dd6ba' : '#d0a54a';
       ctx.shadowBlur = active ? 24 : 12;
       circle(ctx, x, y, r + 8 + flicker, colorAlpha(active ? '#3d9d89' : '#835f31', active ? 0.22 : 0.18));
@@ -769,7 +778,11 @@
       ctx.font = '700 10px ' + FONT;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(active ? 'ONLINE' : '中继站', x, y + r + 17);
+      ctx.fillText(defense ? (defense.elapsed >= 18 ? '击破金色精英' : '守点 ' + Math.ceil(18 - defense.elapsed) + ' 秒') : active ? 'ONLINE' : '守点挑战', x, y + r + 17);
+      if (!active) {
+        ctx.fillStyle = '#f1c15b';
+        ctx.fillText(defense ? '留在圈内 · 可自由走位' : '核心 ×1 + 强化', x, y + r + 32);
+      }
       var progress = clamp(relay.progress, 0, 1);
       if (!active && progress > 0) {
         ctx.strokeStyle = '#f1c15b';
@@ -1096,6 +1109,15 @@
       var r = Math.max(7, entityNumber(enemy, 'r', 16));
       var angle = entityNumber(enemy, 'angle', 0);
       var type = safeText(enemy.type, 'crawler');
+      if (enemy.elite) {
+        ctx.save();
+        circle(ctx, x, y, r + 13, null, '#f5c966', 2);
+        ctx.fillStyle = '#f5c966';
+        ctx.font = '700 11px ' + FONT;
+        ctx.textAlign = 'center';
+        ctx.fillText(game.defense && game.defense.leaderId === enemy.id ? '核心精英' : '精英', x, y - r - 22);
+        ctx.restore();
+      }
       var hurt = clamp(entityNumber(enemy, 'hitFlash', 0), 0, 1);
       var body = type === 'boss' ? '#953e48' : type === 'brute' ? '#6e4146' : type === 'spitter' ? '#57466f' : type === 'runner' ? '#7c4645' : '#674853';
       var edge = type === 'boss' ? '#ff9b73' : type === 'brute' ? '#e78470' : type === 'spitter' ? '#d398e7' : type === 'runner' ? '#f18777' : '#e66f76';
@@ -1577,7 +1599,14 @@
     var relays = Array.isArray(game.relays) ? game.relays : [];
     for (var r = 0; r < relays.length; r += 1) {
       var rp = mapPoint(relays[r]);
-      circle(targetCtx, rp.x, rp.y, large ? 5 : 3, relays[r].active ? '#70dec0' : '#76c5cf');
+      var defending = game.defense && game.defense.relayId === relays[r].id;
+      circle(targetCtx, rp.x, rp.y, defending ? (large ? 9 : 5) : large ? 5 : 3, relays[r].active ? '#70dec0' : '#f5c966');
+      if (large) {
+        targetCtx.fillStyle = '#eadbb3';
+        targetCtx.font = '11px ' + FONT;
+        targetCtx.textAlign = 'center';
+        targetCtx.fillText(relays[r].active ? '已接通' : defending ? '防守中' : '核心 + 强化', rp.x, rp.y + 19);
+      }
     }
     // 未开的物资箱同步出现在地图上，定时投放的补给也沿用相同标记。
     for (var c = 0; c < game.containers.length; c += 1) {
@@ -1593,7 +1622,7 @@
     var enemies = Array.isArray(game.enemies) ? game.enemies : [];
     for (var e = 0; e < enemies.length; e += 1) {
       var ep = mapPoint(enemies[e]);
-      circle(targetCtx, ep.x, ep.y, enemies[e].type === 'boss' ? (large ? 6 : 4) : (large ? 3 : 2), enemies[e].type === 'boss' ? '#e46f65' : '#c6615a');
+      circle(targetCtx, ep.x, ep.y, enemies[e].type === 'boss' || enemies[e].elite ? (large ? 6 : 4) : (large ? 3 : 2), enemies[e].elite ? '#f5c966' : enemies[e].type === 'boss' ? '#e46f65' : '#c6615a');
     }
     var playerPoint = mapPoint(game.player || { x: ww / 2, y: wh / 2 });
     circle(targetCtx, playerPoint.x, playerPoint.y, large ? 6 : 4, '#f2c65d', '#fff0ad', 1);

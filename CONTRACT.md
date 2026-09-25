@@ -64,3 +64,15 @@ UI完整流程：标题→营地→装备选择→出发→初次引导→战斗
 - `trackBuild(id|null):boolean`、`trackedBuild`、`trackingMisses`（0–2）、`trackingGuarantee`（null或本次保底科技ID）。只允许追踪未拥有的进化，配方取 `DATA.upgrades.requires`。连续两次新等级首抽没有可用缺件，下次保证一张；重抽不修改计数且保留已兑现保底，配齐的追踪进化优先提供。切换追踪清零计数，不重新生成当次候选。进化安装后结束追踪。
 - 当前快照 version 3；version 1先做既有迁移，再与version 2显式补入追踪字段与松手保护。新字段严格校验。`result` 追加 `weapon`、`build:[{id,level}]`、`medkitsLeft`。营地v1日志允许已发布旧记录无这三个字段；新摘要要求成组、合法ID和等级，不凭空补齐。
 - `Store.nextGoal(profile,cargo?)` 返回null或 `{kind:'facility',id,name,targetLevel,cost,missing,affordable,unlockWeapon:null|{id,name},description}`。优先可支付设施，再按所缺背包格数排序，同缺口按工作台/仓库/医疗/信标。cargo只做成功带回预测，不改变库存。设施满级后不推荐。
+
+
+## 1.3 突围行动补充契约
+
+以下规则覆盖上文旧版同名机制。
+
+- 开场 6 怪；常规补怪前 30 秒每 2.7 秒一组，之后间隔 `max(1.4, 2.6 - threat * 0.22)`，通常每组 2 怪，守点或接应途中每组 1 怪。常规总量上限为 `20 + threat * 4 + (bossSpawned ? 4 : 0)`。优先从有视线路径生成。
+- 中继长按 1.3 秒启动守点，`defense={relayId,elapsed,wave,leaderId,pattern}`。站点半径 190 内累计 18 秒；离圈暂停、不重置、不补刷。第 0/6/12 秒各一组 4 怪，最后一组追加一名携带核心的精英。三种配置由种子轮换。同一时间仅有一处守点；仍可离开并撤离。
+- 满 18 秒且精英死亡后，在圈内完成接通；精英掉落 1 核心，站点给予 `max(90, xpNext-xp)` 经验及最多 15 治疗。接通幂等；三站全部完成后沿用主动召唤与松手保护。
+- 45 秒开放撤离，首次长按 1 秒呼叫接应，生成一轮 8 人追兵。`exit.called` 防重复，`exit.arrival=max(3.5,8-beacon*1.5)`；即使离圈倒计时也继续，升级/暂停冻结。到达后回绿圈长按原有登车时间，才结算成功。
+- 快照版本 4；v1/v2/v3 显式迁移。保留旧站点和随机状态，旧档已有撤离进度则直接保留通道。守点波次与接应状态都保存，恢复不得重复刷敌或兑现奖励。
+- HUD、教程、触屏交互、场景圈、精英标记与地图必须与上述规则一致。

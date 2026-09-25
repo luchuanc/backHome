@@ -199,8 +199,8 @@ test('三个中继站先锁定信号，达到守卫时间后唤醒 Boss 且至�
   game.relays.forEach((relay) => {
     game.player.x = relay.x;
     game.player.y = relay.y;
-    tick(game, 1.4, { interact: true, autoFire: false });
-    if (game.state === 'upgrade') game.chooseUpgrade(game.upgradeChoices[0]);
+    game._activateRelay(relay);
+    while (game.state === 'upgrade') game.chooseUpgrade(game.upgradeChoices[0]);
   });
   assert.equal(game.relaysActivated, 3);
   assert.equal(game.bossSpawned, false, '中继站不应在第六分钟前直接生成 Boss');
@@ -215,13 +215,16 @@ test('三个中继站先锁定信号，达到守卫时间后唤醒 Boss 且至�
   assert.ok(game.drops.some((drop) => drop.type === 'core' && drop.amount >= 3));
 });
 
-test('出口按住两秒成功撤离，失败只保留 35% 普通资源且核心丢失', () => {
+test('出口呼叫接应后登车成功撤离，失败只保留 35% 普通资源且核心丢失', () => {
   const game = fresh({ facilities: { beacon: 3 } });
   game.elapsed = 45;
   game.exit.available = true;
   game.player.x = game.exit.x;
   game.player.y = game.exit.y;
   tick(game, 1.1, { interact: true, autoFire: false });
+  assert.equal(game.exit.called, true);
+  assert.equal(game.state, 'running');
+  tick(game, 4.6, { interact: true, autoFire: false });
   assert.equal(game.state, 'result');
   assert.equal(game.result.success, true);
   assert.deepEqual(game.result.kept, { scrap: 0, circuit: 0, core: 0 });
@@ -465,7 +468,7 @@ test('重抽候选不足三项时用旧候选补齐，且没有新候选不消�
   assert.deepEqual(noNew.upgradeChoices, ['damage']);
 });
 
-test('版本一快照迁移到版本三时补齐新增字段并保留旧背包与科技', () => {
+test('版本一快照迁移到版本四时补齐新增字段并保留旧背包与科技', () => {
   const game = fresh({ seed: 1717 });
   game.player.bag = { scrap: 12, circuit: 4, core: 1 };
   game.upgrades.damage = 2;
@@ -483,7 +486,7 @@ test('版本一快照迁移到版本三时补齐新增字段并保留旧背包�
   delete legacy.timers.gravity;
   ['metalstorm', 'thunder', 'shatter', 'gravity'].forEach((id) => delete legacy.upgrades[id]);
   const restored = Game.fromSnapshot(legacy);
-  assert.equal(restored.serialize().version, 3);
+  assert.equal(restored.serialize().version, 4);
   assert.deepEqual(restored.player.bag, game.player.bag);
   assert.equal(restored.upgrades.damage, 2);
   assert.equal(restored.combo, 0);

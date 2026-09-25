@@ -143,7 +143,7 @@ function inputFor(game, desired, frame, extra) {
 
 function runJourney(seed, options) {
   const opts = options || {};
-  const game = new Game({
+  let game = new Game({
     seed,
     weapon: opts.weapon || 'rivet',
     tool: opts.tool || 'magnet',
@@ -155,6 +155,7 @@ function runJourney(seed, options) {
   let patrolIndex = 0;
   let lootFrames = 0;
   let bossPosition = null;
+  let restoredDefense = false;
   const patrol = [
     { x: 2080, y: 560 }, { x: 2190, y: 900 }, { x: 1780, y: 1120 },
     { x: 1350, y: 900 }, { x: 980, y: 1450 }, { x: 520, y: 1420 },
@@ -171,8 +172,19 @@ function runJourney(seed, options) {
       continue;
     }
     if (game.state !== 'running') break;
+    if (opts.shortRun && game.defense && game.defense.wave >= 2 && !restoredDefense) {
+      game = Game.fromSnapshot(game.serialize());
+      restoredDefense = true;
+    }
 
     if (phase === 'relays') {
+      if (opts.shortRun && game.relaysActivated >= 1) {
+        phase = 'loot';
+        pathState = { key: null, path: [] };
+        const core = game.drops.find(drop => drop.type === 'core');
+        bossPosition = core || game.relays.find(relay => relay.active);
+        continue;
+      }
       const relay = game.relays.find((item) => !item.active);
       if (!relay) {
         phase = 'wait';
@@ -270,7 +282,7 @@ function runJourney(seed, options) {
     }
     frame += 1;
   }
-  return { game, phase, frame, maxHpSeen: game.player.maxHp, bossPosition };
+  return { game, phase, frame, maxHpSeen: game.player.maxHp, bossPosition, restoredDefense };
 }
 
 function summary(item) {
@@ -322,5 +334,19 @@ test('设施二级与升级组合可以在多枚种子下完成 Boss 路线', ()
     assert.ok(item.game.result.elapsed >= 360);
     assert.ok(item.game.stats.healing > 0, '远征控制器应在受伤后使用急救或恢复强化');
     assert.ok(item.game.bestCombo > 0);
+  }
+});
+
+test('首局短线可通过真实操作完成守点、恢复中断挑战、带核心突围', () => {
+  const results = [3, 17, 91].map(seed => runJourney(seed, { shortRun: true, maxFrames: 3000 }));
+  console.log('[journey-short]', JSON.stringify(results.map(summary)));
+  const success = results.filter(item => item.game.result && item.game.result.success);
+  assert.ok(success.length >= 2, `默认短线应有多种可行种子：${success.length}/3`);
+  for (const item of success) {
+    assert.equal(item.restoredDefense, true);
+    assert.equal(item.game.result.relaysActivated, 1);
+    assert.ok(item.game.result.kept.core >= 1, '守点精英核心应能带回');
+    assert.ok(item.game.result.elapsed < 150, '不必等待自动守卫即可完成一段战斗与撤离循环');
+    assert.ok(item.game.exit.called);
   }
 });
