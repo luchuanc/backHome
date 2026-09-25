@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "resources": {
+    "scrap": 30,
+    "circuit": 4,
+    "core": 0
+  },
+  "facilities": {
+    "workshop": 0,
+    "storage": 0,
+    "infirmary": 0,
+    "beacon": 0
+  },
+  "selectedWeapon": "rivet",
+  "selectedTool": "magnet",
+  "settings": {
+    "music": 0.38,
+    "sfx": 0.68,
+    "muted": false,
+    "reducedMotion": false,
+    "autoFire": true
+  },
+  "stats": {
+    "runs": 0,
+    "escapes": 0,
+    "kills": 0,
+    "bossKills": 0,
+    "bestLoot": 0,
+    "time": 0
+  },
+  "history": [],
+  "storyComplete": false,
+  "tutorialSeen": false,
+  "suspendedRun": null
+}

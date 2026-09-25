@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#172426">
+  <meta name="description" content="最后一家回收站：一款关于拾荒、冒险与回家的完整单机游戏。">
+  <title>最后一家回收站 · THE LAST SALVAGE</title>
+  <link rel="icon" href="assets/v2/interface.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="game-ui.css">
+  <link rel="stylesheet" href="polish.css">
+  <link rel="stylesheet" href="viewport.css">
+  <link rel="stylesheet" href="mobile-hud.css">
+  <link rel="stylesheet" href="gameplay-polish.css">
+</head>
+<body data-view="title">
+  <div id="game-shell"><div id="game-viewport">
+  <canvas id="world" aria-label="回收站与远征地图"></canvas>
+  <div class="scene-vignette"></div>
+  <div id="screen"></div>
+  <div id="hud" hidden></div>
+  <div id="touch-controls" hidden>
+    <div id="joystick-zone" aria-label="移动摇杆"><div id="joystick"><span id="stick"></span></div></div>
+    <div class="touch-actions">
+      <button id="touch-heal" data-touch="heal" aria-label="急救" aria-describedby="touch-heal-state"><span class="touch-action-icon"></span><strong class="touch-label">急救</strong><small class="touch-state" id="touch-heal-state"></small></button>
+      <button id="touch-dash" data-touch="dash" aria-label="冲刺" aria-describedby="touch-dash-state"><span class="touch-action-icon"></span><strong class="touch-label">冲刺</strong><small class="touch-state" id="touch-dash-state"></small></button>
+      <button id="touch-interact" data-touch="interact" aria-label="按住搜集或撤离" aria-describedby="touch-interact-state" hidden><span class="touch-action-icon"></span><strong class="touch-label" id="touch-interact-label">交互</strong><small class="touch-state" id="touch-interact-state">按住</small></button>
+    </div>
+  </div>
+  <div id="overlay" hidden></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="save-warning" role="alert" hidden></div>
+  </div></div>
+  <noscript><div class="noscript">请启用 JavaScript 以游玩《最后一家回收站》。</div></noscript>
+  <script src="src/data.js"></script>
+  <script src="assets/camp-art.js"></script>
+  <script src="assets/v2/world-art.js"></script>
+  <script src="assets/v2/ui-art.js"></script>
+  <script src="src/store.js"></script>
+  <script src="src/audio.js"></script>
+  <script src="src/game.js"></script>
+  <script src="src/renderer.js"></script>
+  <script src="src/viewport.js"></script>
+  <script src="src/ui.js"></script>
+</body>
+</html>

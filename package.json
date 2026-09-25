@@ -1,0 +1,13 @@
+{
+  "name": "the-last-salvage",
+  "version": "1.2.0",
+  "private": true,
+  "description": "最后一家回收站：离线单机拾荒肉鸽游戏",
+  "scripts": {
+    "start": "node server.js",
+    "lan": "HOST=0.0.0.0 PORT=8766 node server.js",
+    "build": "node build.js",
+    "test": "node --test tests/*.test.js",
+    "check": "node --check src/data.js && node --check src/store.js && node --check src/audio.js && node --check src/game.js && node --check src/renderer.js && node --check src/ui.js && node --check src/viewport.js"
+  }
+}

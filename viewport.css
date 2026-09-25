@@ -1,0 +1,11 @@
+/* 游戏逻辑视口独立于手机物理方向，所有尺寸查询都基于实际游戏画布。 */
+html,body{width:100%;height:100%;overscroll-behavior:none}
+#game-shell{position:fixed;inset:0;overflow:hidden;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);background:#09171e}
+#game-viewport{position:absolute;left:0;top:0;width:100%;height:100%;container:game / size;transform-origin:0 0;transform:translate(0,0);overflow:hidden;isolation:isolate;--game-width:100vw;--game-height:100dvh}
+.touch-layout #touch-controls:not([hidden]){display:block}
+.touch-layout .hud-controls{display:none}
+.touch-layout .action-bar{bottom:22px}
+.touch-layout .objectives{bottom:185px}
+.touch-layout .minimap-wrap{bottom:180px}
+.touch-layout .rotate-note{display:block;color:var(--muted);font-size:10px;margin-top:10px}
+@container game (max-height:520px){.touch-layout .objectives{bottom:125px}.touch-layout .minimap-wrap{bottom:128px}}

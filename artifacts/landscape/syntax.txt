@@ -1,0 +1,4 @@
+
+> the-last-salvage@1.1.0 check
+> node --check src/data.js && node --check src/store.js && node --check src/audio.js && node --check src/game.js && node --check src/renderer.js && node --check src/ui.js && node --check src/viewport.js
+

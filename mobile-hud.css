@@ -1,0 +1,288 @@
+/* 手机战斗按游戏逻辑视口排布；面板、操作与中央视野各自保留空间。 */
+.mobile-only { display: none; }
+.touch-layout .desktop-only { display: none !important; }
+.touch-layout .menu-key, .touch-layout .choose-label .key { display: none; }
+.touch-layout .mobile-only { display: inline-flex; }
+.touch-layout #hud {
+  --hud-edge: 12px;
+  --health-width: 176px;
+  --map-size: 92px;
+}
+.touch-layout .hud-top {
+  inset: 8px var(--hud-edge) auto;
+  height: 50px;
+  display: block;
+}
+.touch-layout .health-panel {
+  width: var(--health-width);
+  height: 50px;
+  padding: 5px 10px 6px;
+  border: 1px solid #83998266;
+  border-bottom: 0;
+  border-image: none;
+  background: #0b1a20df;
+  box-shadow: 0 2px 8px #0004;
+}
+.touch-layout .health-title {
+  height: 23px;
+  margin: 0 0 4px;
+  align-items: center;
+  font-size: 12px;
+}
+.touch-layout #mobile-level { color: #b9d2be; font: 700 12px LocalMono, monospace; }
+.touch-layout #hp-value { font: 700 18px LocalMono, monospace; color: #f0f7db; }
+.touch-layout .health-panel .meter { height: 7px; border: 0; }
+.touch-layout .health-panel .xp-meter { height: 2px; margin-top: 3px; }
+.touch-layout .health-sub { display: none; }
+.touch-layout .overdrive-panel {
+  top: 58px;
+  left: var(--hud-edge);
+  width: var(--health-width);
+  height: 27px;
+  padding: 3px 10px 5px;
+  border: 1px solid #83998266;
+  border-top: 0;
+  background: #0b1a20df;
+  box-shadow: 0 3px 8px #0003;
+}
+.touch-layout .overdrive-panel > div:first-child { font-size: 12px; letter-spacing: 0; line-height: 15px; }
+.touch-layout .overdrive-panel small { display: none; }
+.touch-layout .overdrive-meter { height: 3px; margin: 2px 0 0; }
+.touch-layout .overdrive-panel.active { background: #3b2d15e8; border-color: #ebc175; box-shadow: 0 0 15px #d9a54e44; }
+.touch-layout .low-health .health-panel { border-color: #ed8e73; background: #3b2023e8; }
+.touch-layout .low-health #hp-value { color: #ffc0a3; }
+.touch-layout .time-panel {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 98px;
+  min-width: 0;
+  height: 38px;
+  padding: 4px 9px;
+  border: 1px solid #bba36555;
+  border-image: none;
+  background: #0b1a20d4;
+  box-shadow: 0 2px 8px #0003;
+}
+.touch-layout .time-panel .eyebrow { display: none; }
+.touch-layout .time-panel .time { font-size: 22px; line-height: 25px; margin: 0; }
+.touch-layout .threat-bars { gap: 3px; }
+.touch-layout .threat-bars i { width: 12px; height: 2px; }
+.touch-layout .hud-right { position: absolute; top: 0; right: 104px; }
+.touch-layout .bag-panel, .touch-layout .hud-buttons [data-action="map"] { display: none; }
+.touch-layout .hud-buttons { display: block; }
+.touch-layout .hud-buttons .icon-button {
+  width: 44px;
+  height: 44px;
+  border: 1px solid #71877777;
+  border-image: none;
+  background: #0b1a20d4;
+  box-shadow: none;
+}
+.touch-layout #mobile-bag {
+  position: absolute;
+  top: 58px;
+  right: 116px;
+  min-width: 72px;
+  height: 44px;
+  padding: 3px 5px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font: 700 12px LocalMono, monospace;
+  color: #e3d7b1;
+  background: #0b1a20ae;
+  border-bottom: 1px solid #9b956655;
+}
+.touch-layout #mobile-bag .art-icon { width: 22px !important; height: 22px !important; }
+.touch-layout #mobile-bag.full { color: #ffb891; border-color: #e2a071; }
+.touch-layout .objectives {
+  top: 49px;
+  bottom: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 190px;
+  max-width: calc(var(--game-width) - 400px);
+  padding: 3px 0;
+  border: 0;
+  background: none;
+  text-align: center;
+  text-shadow: 0 2px 3px #000, 0 0 8px #000;
+}
+.touch-layout .objectives .eyebrow, .touch-layout .objectives small { display: none; }
+.touch-layout .objectives p { font-size: 13px; line-height: 18px; color: #e9e7c7; }
+.touch-layout .run-banner {
+  top: 94px;
+  left: var(--hud-edge);
+  width: 178px;
+  max-width: 178px;
+  padding: 6px 8px;
+  font-size: 12px;
+  line-height: 18px;
+  background: #102126d9;
+  border-left: 2px solid #d9be7d;
+}
+.touch-layout .minimap-wrap {
+  top: 8px;
+  right: var(--hud-edge);
+  bottom: auto;
+  width: var(--map-size);
+  height: var(--map-size);
+  padding: 3px;
+  border: 1px solid #81947e88;
+  border-image: none;
+  background: #0b1a20d9;
+  box-shadow: 0 2px 8px #0003;
+}
+.touch-layout .minimap-title { display: none; }
+.touch-layout .minimap-wrap button { display: block; width: 100%; height: 100%; }
+.touch-layout .minimap-wrap canvas { width: 100%; height: 100%; }
+/* 连击靠近中央上方，守卫出现时下移；不与右上地图共用区域。 */
+.touch-layout .combo-panel {
+  top: 80px;
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  text-align: center;
+}
+.touch-layout .combo-panel strong { font-size: 25px; line-height: 28px; }
+.touch-layout .combo-panel span { font-size: 12px; line-height: 16px; letter-spacing: 1px; margin: 1px 0 5px; }
+.touch-layout .combo-panel i { margin: 0 auto; max-width: 84px; }
+.touch-layout .boss-bar { top: 78px; width: 206px; max-width: calc(var(--game-width) - 360px); }
+.touch-layout .boss-bar strong { font-size: 12px; letter-spacing: 0; }
+.touch-layout .boss-bar .meter { margin-top: 5px; height: 7px; border-width: 1px; }
+.touch-layout .boss-active .combo-panel { top: 142px; left: var(--hud-edge); transform: none; text-align: left; width: var(--health-width); }
+.touch-layout .boss-active .combo-panel strong { font-size: 22px; }
+.touch-layout .boss-active .combo-panel span { display: none; }
+.touch-layout .boss-active .combo-panel i { margin-left: 0; }
+.touch-layout .run-tech-strip {
+  left: 50%;
+  bottom: 14px;
+  width: auto;
+  min-width: 96px;
+  max-width: 160px;
+  height: 44px;
+  min-height: 44px;
+  padding: 6px 9px;
+  gap: 6px;
+  overflow: hidden;
+  border: 1px solid #9aa47b55;
+  background: #0b1a20cf;
+}
+.touch-layout .tech-strip-title { font-size: 13px; }
+.touch-layout .run-tech-strip kbd, .touch-layout #run-tech-icons small { display: none; }
+.touch-layout #run-tech-icons { gap: 3px; min-width: 0; }
+.touch-layout #run-tech-icons > span:nth-child(n + 4) { display: none; }
+.touch-layout #run-tech-icons .art-icon { width: 24px !important; height: 24px !important; }
+.touch-layout #run-tech-icons b { display: none; }
+.touch-layout #mobile-tech-count { font: 700 13px LocalMono, monospace; color: #f5d59a; }
+.touch-layout .hud-controls, .touch-layout .action-bar, .touch-layout .interaction-hint { display: none; }
+
+/* 浮动摇杆只捕获左下空区，右手按钮各有固定位置，不因交互出现而跳动。 */
+.touch-layout #joystick-zone {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 190px;
+  height: 148px;
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.touch-layout #joystick {
+  left: 28px;
+  bottom: 20px;
+  width: 108px;
+  height: 108px;
+  border: 1px solid #c1d6b478;
+  background: #0c222947;
+  box-shadow: inset 0 0 0 9px #c1d6b409;
+  pointer-events: none;
+}
+.touch-layout #stick {
+  width: 44px;
+  height: 44px;
+  left: 31px;
+  top: 31px;
+  border: 2px solid #d8e4b9ad;
+  background: #bfd3a865;
+  box-shadow: 0 2px 8px #0003;
+}
+.touch-layout #joystick-zone.active #joystick { border-color: #e7eccc; background: #1f3d4480; }
+.touch-layout #joystick-zone.active #stick { background: #c7dbabb0; }
+.touch-layout .touch-actions { right: 16px; bottom: 16px; width: 196px; height: 148px; display: block; }
+.touch-layout .touch-actions button {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 4px;
+  border: 1px solid #c4d0a67a;
+  border-radius: 50%;
+  color: #e1ebd0;
+  background: #142d32e6;
+  box-shadow: 0 3px 10px #0005;
+  font-size: 13px;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  overflow: hidden;
+}
+.touch-layout .touch-actions button:disabled { opacity: .7; cursor: default; }
+.touch-layout .touch-actions button:not(:disabled):active { background-color: #34534b; transform: scale(.96); translate: 0 0; }
+.touch-layout .touch-label { font-size: 14px; font-weight: 750; line-height: 17px; z-index: 1; }
+.touch-layout .touch-state { font: 700 12px LocalMono, monospace; line-height: 15px; z-index: 1; }
+.touch-layout .touch-action-icon { height: 20px; z-index: 1; }
+.touch-layout .touch-action-icon .art-icon { width: 22px !important; height: 22px !important; }
+.touch-layout #touch-dash { right: 0; bottom: 0; width: 76px; height: 76px; color: #ffe2a1; border-color: #e6c779; }
+.touch-layout #touch-dash .touch-action-icon { height: 24px; }
+.touch-layout #touch-dash .art-icon { width: 26px !important; height: 26px !important; }
+.touch-layout #touch-dash .touch-label { font-size: 15px; }
+.touch-layout #touch-dash::before, .touch-layout #touch-interact::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: conic-gradient(#e6c779 var(--charge, 360deg), #253d40 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+  pointer-events: none;
+}
+.touch-layout #touch-heal { right: 90px; bottom: 6px; width: 56px; height: 56px; gap: 0; }
+.touch-layout #touch-heal .touch-action-icon { display: none; }
+.touch-layout #touch-heal:disabled { color: #bfd1bd; }
+.touch-layout #touch-interact { right: 6px; bottom: 90px; width: 58px; height: 58px; color: #c4f5db; border-color: #8ecab0; }
+.touch-layout #touch-interact .touch-action-icon { display: none; }
+.touch-layout #touch-interact::before { background: conic-gradient(#8ae2b9 var(--charge, 0deg), #253d40 0); }
+.touch-layout #touch-interact .touch-label { font-size: 13px; }
+.touch-layout[data-view="run"] #toast {
+  top: auto;
+  bottom: 72px;
+  max-width: calc(var(--game-width) - 408px);
+  padding: 7px 11px;
+  font-size: 13px;
+  line-height: 18px;
+  text-align: center;
+  border: 1px solid #99b8a355;
+  background: #0b1d23e6;
+}
+.touch-layout #hud.overdrive-active .combo-panel strong { color: #fff0bd; text-shadow: 0 0 10px #e1ab56aa, 0 2px 3px #000; }
+
+@container game (max-width: 600px) {
+  .touch-layout #hud { --hud-edge: 10px; --health-width: 158px; --map-size: 84px; }
+  .touch-layout .hud-right { right: 96px; }
+  .touch-layout #mobile-bag { right: 106px; min-width: 68px; }
+  .touch-layout .objectives { max-width: calc(var(--game-width) - 354px); width: 156px; font-size: 12px; }
+  .touch-layout .objectives p { font-size: 12px; }
+  .touch-layout .run-banner { max-width: 158px; }
+  .touch-layout .run-tech-strip { max-width: 142px; gap: 4px; padding: 5px 7px; }
+  .touch-layout #run-tech-icons .art-icon { width: 20px !important; height: 20px !important; }
+  .touch-layout #joystick-zone { width: 178px; }
+  .touch-layout .boss-bar { max-width: calc(var(--game-width) - 340px); }
+  .touch-layout[data-view="run"] #toast { max-width: calc(var(--game-width) - 368px); }
+}

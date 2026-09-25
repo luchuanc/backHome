@@ -1,0 +1,216 @@
+
+> the-last-salvage@1.1.0 test
+> node --test tests/*.test.js
+
+TAP version 13
+# Subtest: 初始化拥有可达地图、三座中继站和有限状态
+ok 1 - 初始化拥有可达地图、三座中继站和有限状态
+  ---
+  duration_ms: 2.759084
+  ...
+# Subtest: 相同种子与输入可以重放相同的核心状态
+ok 2 - 相同种子与输入可以重放相同的核心状态
+  ---
+  duration_ms: 18.388708
+  ...
+# Subtest: 四种武器产生不同弹道，而墙体会遮挡弹道
+ok 3 - 四种武器产生不同弹道，而墙体会遮挡弹道
+  ---
+  duration_ms: 0.783875
+  ...
+# Subtest: chain科技作用于所有主武器，且每枚子弹的连锁预算只消费一次
+ok 4 - chain科技作用于所有主武器，且每枚子弹的连锁预算只消费一次
+  ---
+  duration_ms: 0.873
+  ...
+# Subtest: 玩家和敌人不能穿过建筑碰撞体，冲刺有无敌帧
+ok 5 - 玩家和敌人不能穿过建筑碰撞体，冲刺有无敌帧
+  ---
+  duration_ms: 0.374959
+  ...
+# Subtest: 远程敌人和 Boss 会按预警冷却持续攻击，单轮不会叠加整组伤害
+ok 6 - 远程敌人和 Boss 会按预警冷却持续攻击，单轮不会叠加整组伤害
+  ---
+  duration_ms: 5.752375
+  ...
+# Subtest: 贴脸目标不会永久穿入玩家，近距离弹道仍能命中
+ok 7 - 贴脸目标不会永久穿入玩家，近距离弹道仍能命中
+  ---
+  duration_ms: 0.546875
+  ...
+# Subtest: 分裂破片只生成一层，不会在密集敌群中指数扩散
+ok 8 - 分裂破片只生成一层，不会在密集敌群中指数扩散
+  ---
+  duration_ms: 2.508625
+  ...
+# Subtest: 箱子按住互动完成后会留下可拾取资源，容量不足不会吞掉掉落
+ok 9 - 箱子按住互动完成后会留下可拾取资源，容量不足不会吞掉掉落
+  ---
+  duration_ms: 1.11975
+  ...
+# Subtest: 升级候选始终来自未满级强化，选择后恢复战斗
+ok 10 - 升级候选始终来自未满级强化，选择后恢复战斗
+  ---
+  duration_ms: 2.481458
+  ...
+# Subtest: 三个中继站先锁定信号，达到守卫时间后唤醒 Boss 且至少掉落三个核心
+ok 11 - 三个中继站先锁定信号，达到守卫时间后唤醒 Boss 且至少掉落三个核心
+  ---
+  duration_ms: 3.582208
+  ...
+# Subtest: 出口按住两秒成功撤离，失败只保留 35% 普通资源且核心丢失
+ok 12 - 出口按住两秒成功撤离，失败只保留 35% 普通资源且核心丢失
+  ---
+  duration_ms: 1.291917
+  ...
+# Subtest: 快照包含顶层 player 并恢复随机数、战斗和交互进度
+ok 13 - 快照包含顶层 player 并恢复随机数、战斗和交互进度
+  ---
+  duration_ms: 2.779417
+  ...
+# Subtest: 快照导入拒绝版本错误、非有限关键数值和异常数组长度
+ok 14 - 快照导入拒绝版本错误、非有限关键数值和异常数组长度
+  ---
+  duration_ms: 1.640959
+  ...
+# Subtest: 定时补给只触发一次，且中断快照会保留触发标记
+ok 15 - 定时补给只触发一次，且中断快照会保留触发标记
+  ---
+  duration_ms: 2.284792
+  ...
+# Subtest: 连击与超载按击杀推进，升级暂停期间计时冻结并可恢复
+ok 16 - 连击与超载按击杀推进，升级暂停期间计时冻结并可恢复
+  ---
+  duration_ms: 1.996208
+  ...
+# Subtest: 进化前置、重抽和四种科技机制均有真实战斗效果
+ok 17 - 进化前置、重抽和四种科技机制均有真实战斗效果
+  ---
+  duration_ms: 1.689375
+  ...
+# Subtest: 重抽候选不足三项时用旧候选补齐，且没有新候选不消耗次数
+ok 18 - 重抽候选不足三项时用旧候选补齐，且没有新候选不消耗次数
+  ---
+  duration_ms: 0.567708
+  ...
+# Subtest: 版本一快照迁移到版本二时补齐新增字段并保留旧背包与科技
+ok 19 - 版本一快照迁移到版本二时补齐新增字段并保留旧背包与科技
+  ---
+  duration_ms: 0.698417
+  ...
+# Subtest: 版本一快照按已过去时间迁移清剿波次标记，避免恢复首帧补刷
+ok 20 - 版本一快照按已过去时间迁移清剿波次标记，避免恢复首帧补刷
+  ---
+  duration_ms: 0.538917
+  ...
+# Subtest: 定时清剿波次只刷一次且遵守普通敌人预算
+ok 21 - 定时清剿波次只刷一次且遵守普通敌人预算
+  ---
+  duration_ms: 0.236291
+  ...
+# [journey-default] [{"seed":3,"success":true,"reason":"extracted","phase":"exit","seconds":503.6,"relays":3,"boss":true,"kills":126,"level":12,"bestCombo":24,"hp":18,"healing":200},{"seed":17,"success":false,"reason":"destroyed","phase":"boss","seconds":405.1,"relays":3,"boss":false,"kills":107,"level":11,"bestCombo":17,"hp":0,"healing":200},{"seed":91,"success":true,"reason":"extracted","phase":"exit","seconds":502.7,"relays":3,"boss":true,"kills":157,"level":14,"bestCombo":27,"hp":16,"healing":220},{"seed":1234,"success":true,"reason":"extracted","phase":"exit","seconds":476.8,"relays":3,"boss":true,"kills":134,"level":13,"bestCombo":12,"hp":33,"healing":250}]
+# [journey-facility2] [{"seed":6,"success":true,"reason":"extracted","phase":"exit","seconds":441.7,"relays":3,"boss":true,"kills":120,"level":12,"bestCombo":13,"hp":108,"healing":156},{"seed":8,"success":true,"reason":"extracted","phase":"exit","seconds":512.3,"relays":3,"boss":true,"kills":149,"level":14,"bestCombo":18,"hp":155,"healing":260},{"seed":10,"success":true,"reason":"extracted","phase":"exit","seconds":441.2,"relays":3,"boss":true,"kills":114,"level":12,"bestCombo":22,"hp":155,"healing":578}]
+# Subtest: 默认装备至少有一条真实移动通关路线，并经历等待期与强化
+ok 22 - 默认装备至少有一条真实移动通关路线，并经历等待期与强化
+  ---
+  duration_ms: 936.378125
+  ...
+# Subtest: 设施二级与升级组合可以在多枚种子下完成 Boss 路线
+ok 23 - 设施二级与升级组合可以在多枚种子下完成 Boss 路线
+  ---
+  duration_ms: 645.634458
+  ...
+# Subtest: 营地购买扣除准确资源，不能透支或超过等级上限
+ok 24 - 营地购买扣除准确资源，不能透支或超过等级上限
+  ---
+  duration_ms: 1.700542
+  ...
+# Subtest: 结算一次入库，移除中断战局，日志与统计持久化
+ok 25 - 结算一次入库，移除中断战局，日志与统计持久化
+  ---
+  duration_ms: 0.867708
+  ...
+# Subtest: 损坏存档与未知版本被拒绝，并保留原始数据供备份排查
+ok 26 - 损坏存档与未知版本被拒绝，并保留原始数据供备份排查
+  ---
+  duration_ms: 2.263583
+  ...
+# Subtest: 存储不可用时返回失败，游戏仍然可以使用内存进度
+ok 27 - 存储不可用时返回失败，游戏仍然可以使用内存进度
+  ---
+  duration_ms: 0.619708
+  ...
+# Subtest: 导入拒绝锁定武器、非法音量和不可信的远征日志
+ok 28 - 导入拒绝锁定武器、非法音量和不可信的远征日志
+  ---
+  duration_ms: 0.724125
+  ...
+# Subtest: 标题保持原方向，点击进入即横屏且同步请求系统全屏
+ok 29 - 标题保持原方向，点击进入即横屏且同步请求系统全屏
+  ---
+  duration_ms: 1.384708
+  ...
+# Subtest: 系统转到横屏后撤掉舞台旋转，回到竖屏只旋转一次
+ok 30 - 系统转到横屏后撤掉舞台旋转，回到竖屏只旋转一次
+  ---
+  duration_ms: 0.344542
+  ...
+# Subtest: 安全边距和视觉视口偏移从可用画布扣除，旋转坐标与向量一致
+ok 31 - 安全边距和视觉视口偏移从可用画布扣除，旋转坐标与向量一致
+  ---
+  duration_ms: 0.240291
+  ...
+# Subtest: 父级 CSS 缩放后仍使用横屏逻辑坐标，不受旋转包围盒影响
+ok 32 - 父级 CSS 缩放后仍使用横屏逻辑坐标，不受旋转包围盒影响
+  ---
+  duration_ms: 0.166083
+  ...
+# Subtest: 桌面窗口不请求系统全屏，小窗口可预览横屏与触屏布局
+ok 33 - 桌面窗口不请求系统全屏，小窗口可预览横屏与触屏布局
+  ---
+  duration_ms: 0.781083
+  ...
+# Subtest: 全屏或方向锁被拒绝时横向游戏布局仍可使用，拒绝不向外抛出
+ok 34 - 全屏或方向锁被拒绝时横向游戏布局仍可使用，拒绝不向外抛出
+  ---
+  duration_ms: 0.251375
+  ...
+# Subtest: 浏览器没有全屏和方向锁 API 时直接采用舞台横屏
+ok 35 - 浏览器没有全屏和方向锁 API 时直接采用舞台横屏
+  ---
+  duration_ms: 0.182583
+  ...
+# Subtest: 已有全屏时直接锁横屏，退出全屏不会自动重复进入
+ok 36 - 已有全屏时直接锁横屏，退出全屏不会自动重复进入
+  ---
+  duration_ms: 0.21775
+  ...
+# Subtest: 重复进入共享同一个未完成请求，避免并发全屏和方向锁
+ok 37 - 重复进入共享同一个未完成请求，避免并发全屏和方向锁
+  ---
+  duration_ms: 7.327792
+  ...
+# Subtest: 重复 resize 只在实际布局变化时通知，销毁移除所有监听并还原样式
+ok 38 - 重复 resize 只在实际布局变化时通知，销毁移除所有监听并还原样式
+  ---
+  duration_ms: 0.389375
+  ...
+# Subtest: 全屏等待期间销毁不会继续请求方向锁
+ok 39 - 全屏等待期间销毁不会继续请求方向锁
+  ---
+  duration_ms: 0.105125
+  ...
+# Subtest: 方向锁等待期间销毁，晚到的成功结果也会解除锁定
+ok 40 - 方向锁等待期间销毁，晚到的成功结果也会解除锁定
+  ---
+  duration_ms: 0.744833
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1644.938833

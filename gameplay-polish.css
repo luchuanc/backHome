@@ -1,0 +1,193 @@
+/* 玩法反馈沿用已有 imagegen 面板与图标，新增信息只在需要决策时出现。 */
+.core-exchange-hud {
+  position: absolute;
+  top: 244px;
+  right: 25px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 7px 13px;
+  border: 1px solid #e8c37c;
+  color: #ffe5a7;
+  background: #302819ef;
+  box-shadow: 0 3px 12px #0006;
+  font-size: 13px;
+  pointer-events: auto;
+}
+
+.core-exchange-hud:hover { background: #534126; }
+.exchange-emblem { margin-bottom: 14px; }
+.exchange-terms { margin: 20px 0 8px; font-size: 17px; line-height: 1.8; color: #eadfc0; }
+.exchange-terms strong { color: #ffe09e; font: 700 23px LocalMono, monospace; }
+.exchange-pause-button { width: 100%; min-height: 46px; margin-top: 17px; gap: 9px; font-size: 13px; }
+.exchange-pause-button small { margin-left: auto; font-size: 12px; }
+.ready-brief { border-left: 2px solid #d2b572; background: #17272cad; padding: 11px 13px; }
+.ready-brief strong { font-size: 14px; color: #ead29a; }
+.ready-brief p { font-size: 12px; line-height: 1.7; margin: 6px 0; }
+.ready-brief small { color: #b6cabb; font-size: 12px; }
+.first-run-goal { display: flex; gap: 8px; align-items: center; font-size: 12px; line-height: 1.8; margin-top: 15px; color: #caddb9; }
+.overdrive-panel.ready { border-color: #92dbc2; background: #193733e8; }
+.overdrive-panel.ready span, .overdrive-panel.ready strong { color: #bdffe4; }
+.overdrive-panel.ready .overdrive-meter i { background: #adf7ce; box-shadow: 0 0 8px #b6ffe07a; }
+
+.quick-tutorial { width: 780px; }
+.quick-tutorial-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 22px; }
+.quick-tutorial-steps > div { border-top: 1px solid #b39d6566; padding-top: 12px; }
+.quick-tutorial-steps > div > span { font: 700 18px LocalMono, monospace; color: #edca83; margin-right: 7px; }
+.quick-tutorial-steps strong { font-size: 14px; color: #eddfc0; }
+.quick-tutorial-steps p { color: #b8cabc; font-size: 13px; line-height: 1.65; margin-top: 8px; }
+.quick-tutorial-note { margin-top: 16px; font-size: 12px; line-height: 1.6; color: #adbcaa; }
+
+.tracking-summary { display: flex; align-items: center; gap: 9px; margin-top: 12px; padding: 8px 10px; background: #17282bab; border-left: 2px solid #c4bd7f; }
+.tracking-summary > div { flex: 1; min-width: 0; }
+.tracking-summary strong { font-size: 12px; color: #ecdbac; margin-right: 12px; }
+.tracking-summary span, .tracking-summary > small { font-size: 11px; line-height: 1.7; color: #bed6bb; }
+.tracking-summary > small { text-align: right; }
+.tech-choice.tracked-choice { outline: 1px solid #e1c478; outline-offset: -3px; }
+.tracked-choice .tech-card-top > span:first-child { color: #f5d98f; }
+.tracked-blueprint { border-color: #d1be77; background: #29362b9c; }
+.blueprint > div:last-child { min-width: 0; }
+.blueprint-track { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 7px 11px; margin-top: 12px; border: 1px solid #a8b28f77; color: #c9dabb; background: #13282bbd; font-size: 12px; }
+.blueprint-track.selected { border-color: #e0c483; color: #f2df9f; background: #4a412560; }
+.blueprint-track:disabled { opacity: .7; color: #a3d1b6; }
+.blueprint-camp-note { display: block; font-size: 11px; color: #90a89a; margin-top: 11px; }
+.tracking-rule { padding: 9px 12px; border-left: 2px solid #c1ac76; background: #102327a3; font-size: 12px; line-height: 1.8; color: #cbd9bd; }
+
+.result-build { margin: -3px 0 20px; padding: 12px 0; border-bottom: 1px solid #9fa87b33; }
+.result-weapon { display: flex; align-items: center; gap: 10px; }
+.result-weapon small { display: block; font-size: 11px; color: #a6b9a6; margin-bottom: 4px; }
+.result-weapon strong { font-size: 15px; color: #e4dbb9; }
+.result-tech { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 13px; }
+.result-tech > span { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #b8d0b8; }
+.result-tech b { display: block; color: #dac390; font: 10px LocalMono, monospace; margin-top: 4px; }
+.result-tech > small { font-size: 12px; color: #93a98f; }
+.result-next-goal { display: flex; align-items: center; gap: 13px; margin-top: 20px; padding: 14px; border-left: 2px solid #d0b372; background: #1d3033ba; }
+.result-next-goal small { color: #c9bc86; font-size: 11px; }
+.result-next-goal h3 { color: #e7dfba; font-size: 17px; margin: 6px 0; }
+.result-next-goal p { color: #b7c8b3; font-size: 12px; line-height: 1.7; }
+.result-next-goal strong { display: block; color: #e6c98b; font-size: 12px; margin-top: 6px; }
+.run-log-build { max-width: 340px; line-height: 1.6; color: #c6cda9 !important; }
+
+/* 核心交换放在右上信息区下沿，避开左侧摇杆和右侧冲刺、长按交互区域。 */
+.touch-layout .core-exchange-hud { top: max(106px, calc(var(--map-size) + 16px)); right: var(--hud-edge); min-width: 126px; height: 44px; padding: 6px 11px; font-size: 13px; }
+.touch-layout .overdrive-panel.ready { border-color: #93d0ad; background: #1a3533e8; }
+.touch-layout .quick-tutorial .intro { font-size: 13px; }
+.touch-layout .blueprint p, .touch-layout .blueprint small { font-size: 12px; }
+.touch-layout .blueprint .recipe-part { font-size: 11px; }
+.touch-layout .blueprint .recipe-part b { font-size: 11px; }
+.touch-layout .tracking-summary > small { font-size: 11px; }
+
+@container game (max-width: 700px) {
+  .tracking-summary { gap: 7px; padding: 7px 9px; flex-wrap: wrap; }
+  .tracking-summary strong { display: block; margin-right: 0; }
+  .tracking-summary > small { max-width: 105px; }
+  .blueprint-track { padding: 7px 9px; }
+  .result-tech { gap: 10px; }
+  .run-log-build { max-width: 280px; }
+}
+@container game (max-height: 550px) {
+  .core-exchange-hud { top: 190px; }
+  .touch-layout .core-exchange-hud { top: max(106px, calc(var(--map-size) + 16px)); }
+  .quick-tutorial { padding: 12px 18px; }
+  .quick-tutorial .eyebrow { margin-bottom: 5px; font-size: 9px; }
+  .quick-tutorial h2 { font-size: 22px; }
+  .quick-tutorial .intro { display: none; }
+  .quick-tutorial-steps { margin-top: 12px; gap: 14px; }
+  .quick-tutorial-steps > div { padding-top: 8px; }
+  .quick-tutorial-steps > div > span { font-size: 15px; margin-right: 4px; }
+  .quick-tutorial-steps strong { font-size: 13px; }
+  .quick-tutorial-steps p { margin-top: 6px; font-size: 12px; line-height: 1.5; }
+  .quick-tutorial-note { margin-top: 9px; font-size: 11px; }
+  .quick-tutorial .modal-actions { margin-top: 10px; }
+  .tracking-summary { margin-top: 8px; }
+  .tracking-summary .art-icon { width: 25px !important; height: 25px !important; }
+  .result-build { margin-bottom: 15px; }
+  .result-next-goal { margin-top: 14px; padding: 11px; }
+  .exchange-emblem { float: right; margin: 0 0 8px 14px; }
+  .exchange-terms { margin-top: 15px; font-size: 16px; }
+}
+
+/* 横屏科技选择把空间留给数值、配方与选择动作；短屏只滚动三张卡，重抽始终可达。 */
+@container game (max-height: 550px) and (min-width: 481px) {
+  .touch-layout .technology-modal {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    gap: 6px;
+    width: min(1050px, calc(var(--game-width) - 24px));
+    height: calc(var(--game-height) - 16px);
+    max-height: calc(var(--game-height) - 16px);
+    padding: 10px 14px;
+    overflow: hidden;
+  }
+  .touch-layout .technology-modal .tech-screen-heading { grid-row: 1; min-width: 0; gap: 10px; align-items: center; }
+  .touch-layout .technology-modal .tech-screen-heading > div { min-width: 0; }
+  .touch-layout .technology-modal .tech-screen-heading .eyebrow { font-size: 9px; line-height: 12px; margin: 0; letter-spacing: 1px; }
+  .touch-layout .technology-modal .tech-screen-heading h2 { font-size: 20px; line-height: 25px; margin: 0; }
+  .touch-layout .technology-modal .tech-screen-heading .intro:not(.install-feedback) { display: none; }
+  .touch-layout .technology-modal .tech-screen-heading .install-feedback { font-size: 11px; line-height: 16px; margin: 3px 0 0; }
+  .touch-layout .technology-modal .blueprint-button { min-height: 44px; max-width: 150px; flex: none; font-size: 12px; padding: 6px 9px; gap: 5px; }
+  .touch-layout .technology-modal .blueprint-button .art-icon { width: 22px !important; height: 22px !important; }
+  .touch-layout .technology-modal .tracking-summary { grid-row: 2; margin: 0; padding: 4px 8px; gap: 7px; flex-wrap: nowrap; }
+  .touch-layout .technology-modal .tracking-summary > .art-icon { width: 24px !important; height: 24px !important; }
+  .touch-layout .technology-modal .tracking-summary strong { display: inline; font-size: 12px; line-height: 16px; margin-right: 8px; }
+  .touch-layout .technology-modal .tracking-summary span { font-size: 11px; line-height: 16px; }
+  .touch-layout .technology-modal .tracking-summary > small { flex: none; font-size: 11px; line-height: 16px; max-width: 128px; }
+  .touch-layout .technology-modal .upgrade-grid {
+    grid-row: 3;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* 窄屏换行后按完整内容撑高卡片，再由卡区滚动，不能裁掉配方或安装入口。 */
+    grid-auto-rows: max-content;
+    align-content: start;
+    gap: 10px;
+    min-height: 0;
+    margin: 0;
+    padding: 2px 2px 4px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #b7b27c #172b2c;
+  }
+  .touch-layout .technology-modal .tech-choice { min-height: 184px; min-width: 0; padding: 7px 8px 0; border-width: 6px; overflow: hidden; }
+  .touch-layout .technology-modal .tech-choice:hover { translate: 0 0; }
+  .touch-layout .technology-modal .tech-card-top { font-size: 10px; line-height: 14px; min-height: 14px; letter-spacing: 0; }
+  .touch-layout .technology-modal .tech-rank { font-size: 10px; line-height: 13px; padding: 0 3px; }
+  .touch-layout .technology-modal .tech-art,
+  .touch-layout .technology-modal .tech-choice.evolution .tech-art { position: absolute; top: 28px; left: 8px; width: 40px; height: 40px; margin: 0; }
+  .touch-layout .technology-modal .tech-art .art-icon,
+  .touch-layout .technology-modal .tech-choice.evolution .tech-art .art-icon { width: 40px !important; height: 40px !important; box-shadow: none; }
+  .touch-layout .technology-modal .tech-art::after { display: none; }
+  .touch-layout .technology-modal .tech-card-body { display: flex; flex-direction: column; width: 100%; padding-top: 4px; }
+  .touch-layout .technology-modal .tech-card-body h3 { order: 0; padding-left: 47px; min-height: 22px; margin: 0; font-size: 17px; line-height: 22px; letter-spacing: 0; }
+  .touch-layout .technology-modal .tech-card-body p { display: none; }
+  .touch-layout .technology-modal .tech-card-body .tech-delta { order: 1; padding: 0 0 0 47px; border: 0; margin: 2px 0 4px; font-size: 12px; line-height: 17px; }
+  .touch-layout .technology-modal .tech-signal { order: 2; min-height: 15px; font-size: 11px; line-height: 15px; margin: 3px 0 5px; }
+  .touch-layout .technology-modal .tech-recipe-caption,
+  .touch-layout .technology-modal .tech-flavor { display: none; }
+  .touch-layout .technology-modal .tech-recipe { order: 3; min-height: 30px; gap: 4px; margin: 0; }
+  .touch-layout .technology-modal .recipe-part { font-size: 11px; line-height: 14px; gap: 3px; }
+  .touch-layout .technology-modal .recipe-part b { font-size: 11px; line-height: 14px; }
+  .touch-layout .technology-modal .recipe-part .art-icon { width: 18px !important; height: 18px !important; }
+  .touch-layout .technology-modal .recipe-plus { font-size: 11px; }
+  .touch-layout .technology-modal .tech-choice .choose-label { min-height: 32px; width: calc(100% + 16px); margin-left: -8px; margin-top: auto; padding: 6px 8px; font-size: 12px; line-height: 18px; }
+  .touch-layout .technology-modal .choose-label > .art-icon { width: 18px !important; height: 18px !important; }
+  /* 进化描述含伤害比例与作用范围，保留完整描述，仅去掉重复的增量文案。 */
+  .touch-layout .technology-modal .tech-choice.evolution .tech-card-body p { display: block; order: 1; min-height: 0; padding-left: 47px; margin: 2px 0 4px; font-size: 12px; line-height: 17px; }
+  .touch-layout .technology-modal .tech-choice.evolution .tech-delta { display: none; }
+  .touch-layout .technology-modal .tech-bottom { grid-row: 4; min-width: 0; min-height: 44px; margin: 0; gap: 10px; align-items: center; }
+  .touch-layout .technology-modal .installed-tech { flex: 1; min-width: 0; max-height: 34px; overflow: hidden; gap: 4px; }
+  .touch-layout .technology-modal .installed-tech > span:first-child { display: none; }
+  .touch-layout .technology-modal .installed-tech .art-icon { width: 24px !important; height: 24px !important; }
+  .touch-layout .technology-modal .reroll-button { min-height: 44px; flex: none; padding: 6px 10px; font-size: 12px !important; gap: 7px; }
+  .touch-layout .technology-modal .reroll-button .art-icon { width: 22px !important; height: 22px !important; }
+}
+@container game (max-height: 550px) and (min-width: 481px) and (max-width: 700px) {
+  .touch-layout .technology-modal .tech-screen-heading h2::after { content: '上下滑动科技卡，查看完整效果'; display: block; margin-top: 2px; font-size: 11px; line-height: 15px; font-weight: 400; letter-spacing: 0; color: #aec3af; }
+  .touch-layout .technology-modal .tracking-summary strong { display: block; }
+  .touch-layout .technology-modal .tracking-summary > small { max-width: 96px; }
+  .touch-layout .technology-modal .upgrade-grid { gap: 7px; }
+  .touch-layout .technology-modal .tech-card-body h3 { font-size: 16px; }
+}
